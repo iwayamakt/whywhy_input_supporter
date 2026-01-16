@@ -1,0 +1,207 @@
+
+/* =========
+   Theme tokens (default: light)
+   - OSテーマ: prefers-color-scheme で自動切替
+   - Officeテーマ: JSで html[data-theme="dark"] / "light" を付ければ上書き可能
+========= */
+:root{
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #333333;
+
+  --ctrl-bg: #ffffff;
+  --ctrl-fg: #111111;
+  --border: #c8c8c8;
+
+  --btn-bg: #f3f3f3;
+  --btn-fg: #111111;
+  --btn-border: #bdbdbd;
+
+  --focus: #2a7fff;
+}
+
+/* OSがダークのとき自動でダーク配色へ */
+@media (prefers-color-scheme: dark){
+  :root{
+    --bg: #1e1e1e;
+    --fg: #f3f3f3;
+    --muted: #cfcfcf;
+
+    --ctrl-bg: #2a2a2a;
+    --ctrl-fg: #f3f3f3;
+    --border: #3a3a3a;
+
+    --btn-bg: #2a2a2a;
+    --btn-fg: #f3f3f3;
+    --btn-border: #3a3a3a;
+
+    --focus: #7db7ff;
+  }
+}
+
+/* JSで強制したい場合（Office.context.officeThemeに合わせたい時）
+   document.documentElement.dataset.theme = "dark" | "light"
+*/
+html[data-theme="light"]{
+  --bg: #ffffff;
+  --fg: #111111;
+  --muted: #333333;
+
+  --ctrl-bg: #ffffff;
+  --ctrl-fg: #111111;
+  --border: #c8c8c8;
+
+  --btn-bg: #f3f3f3;
+  --btn-fg: #111111;
+  --btn-border: #bdbdbd;
+
+  --focus: #2a7fff;
+}
+
+html[data-theme="dark"]{
+  --bg: #1e1e1e;
+  --fg: #f3f3f3;
+  --muted: #cfcfcf;
+
+  --ctrl-bg: #2a2a2a;
+  --ctrl-fg: #f3f3f3;
+  --border: #3a3a3a;
+
+  --btn-bg: #2a2a2a;
+  --btn-fg: #f3f3f3;
+  --btn-border: #3a3a3a;
+
+  --focus: #7db7ff;
+}
+
+/* =========
+   0) まず縮み防止（最重要）
+========= */
+* { box-sizing: border-box; }
+
+input, textarea, select {
+  width: 100%;
+  min-width: 0;
+}
+
+/* チェックボックスは width:100% の副作用を打ち消す */
+input[type="checkbox"]{
+  width: auto;
+  min-width: auto;
+}
+
+/* =========
+   1) 全体の余白・文字
+========= */
+html, body {
+  margin: 0;
+  padding: 12px;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: "Segoe UI", system-ui, -apple-system, sans-serif;
+}
+
+h1, h2 {
+  margin: 0 0 8px;
+}
+
+label {
+  color: var(--muted);
+  font-size: 12px;
+  display: block;
+  margin-bottom: 4px;
+}
+
+/* =========
+   2) ボタン列（読み取り/品質チェック/書き戻し）
+========= */
+.row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  align-items: center;
+  margin-bottom: 6px;
+}
+
+button {
+  padding: 6px 10px;
+  border: 1px solid var(--btn-border);
+  border-radius: 4px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  cursor: pointer;
+}
+
+button:hover{
+  filter: brightness(1.03);
+}
+
+button:focus{
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+}
+
+/* =========
+   3) 入力欄の共通見た目
+========= */
+
+/* 入力欄（checkbox / radio / range / button 系は除外） */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
+textarea,
+select {
+  padding: 6px 8px;
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  font-size: 13px;
+  line-height: 1.35;
+  background: var(--ctrl-bg);
+  color: var(--ctrl-fg);
+}
+
+/* focusも同様に */
+input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]):focus,
+
+
+input[type="text"]:focus,
+input[type="date"]:focus,
+textarea:focus,
+select:focus{
+  outline: 2px solid var(--focus);
+  outline-offset: 1px;
+}
+
+textarea {
+  min-height: 72px;
+  resize: vertical;
+}
+
+/* =========
+   4) 既存の .grid2 を「2列グリッド」として安定させる
+========= */
+.grid2 {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  align-items: start;
+}
+
+/* スマホ/狭いパネル時は1列へ */
+@media (max-width: 520px) {
+  .grid2 { grid-template-columns: 1fr; }
+}
+
+/* =========
+   5) チェックボックス行（空欄のみ上書き）
+========= */
+.chk{
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin: 6px 0 10px;
+  font-size: 12px;
+  color: var(--muted);
+}
+
+.chk input[type="checkbox"]{
+  margin: 0;
+}

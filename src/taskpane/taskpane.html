@@ -1,0 +1,91 @@
+
+<!-- src/taskpane/taskpane.html -->
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8" />
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WhyWhy Input Supporter</title>
+
+  <link rel="stylesheet" href="./taskpane.css" />
+  <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
+</head>
+
+<body>
+  <div class="wrap">
+    <h1>なぜなぜ分析 入力支援</h1>
+
+    <div class="row">
+      <button id="btnRead">読み取り</button>
+      <button id="btnValidate">品質チェック</button>
+      <button id="btnWrite" class="primary">書き戻し</button>
+    </div>
+
+    <label class="chk">
+      <input type="checkbox" id="onlyIfEmpty" checked />
+      空欄のみ上書き（安全）
+    </label>
+
+    <h2>メタ</h2>
+    <div class="grid2">
+      <div>
+        <label>製品名</label>
+        <input id="metaProduct" />
+      </div>
+      <div>
+        <label>発表日</label>
+        <input id="metaDate" />
+      </div>
+      <div>
+        <label>部品名</label>
+        <input id="metaPart" />
+      </div>
+      <div>
+        <label>担当者</label>
+        <input id="metaOwner" />
+      </div>
+    </div>
+
+    <h2>本文</h2>
+
+    <label>現象</label>
+    <textarea id="phenomenon" rows="4"></textarea>
+
+    <label>問題</label>
+    <textarea id="problem" rows="2"></textarea>
+
+    <label>なぜ①</label>
+    <textarea id="why1" rows="2"></textarea>
+
+    <label>原因</label>
+    <textarea id="cause" rows="2"></textarea>
+
+    <label>なぜ②</label>
+    <textarea id="why2" rows="2"></textarea>
+
+    <label>対処</label>
+    <textarea id="actionImmediate" rows="2"></textarea>
+
+    <label>なぜ③</label>
+    <textarea id="why3" rows="2"></textarea>
+
+    <label>なぜ④</label>
+    <textarea id="why4" rows="2"></textarea>
+
+    <label>対策</label>
+    <textarea id="countermeasure" rows="3"></textarea>
+
+    <label>なぜ⑤</label>
+    <textarea id="why5" rows="2"></textarea>
+
+    <h2>指摘</h2>
+    <div id="issues" class="issues"></div>
+
+    <h2>ログ</h2>
+    <pre id="log" class="log"></pre>
+  </div>
+
+  <script type="module" src="./taskpane.ts"></script>
+</body>
+</html>
