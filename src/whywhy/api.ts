@@ -9,11 +9,9 @@ export type WhyWhyResponse = {
 };
 
 const FLOW_ENDPOINT =
-  (process.env.WHYWHY_FLOW_ENDPOINT as string) ||
-  "<Flow の HTTP 受信 URL をここに貼る>"; // ?code=... を含む
+  "https://defaultd6eabf0ae5744f8bae6acbf6b315c6.f7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/f1705aeeac964e8993b348cfdca2939e/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=G7UI75jdDXRIIc97Jma3cEHxHBWUNLpSS8cmNSH-NAQ";
 
-const FLOW_AUTH_KEY =
-  (process.env.WHYWHY_FLOW_KEY as string) || ""; // 使わなければ空
+const FLOW_AUTH_KEY = ""; // 使わなければ空
 
 // 共通：フェッチ（タイムアウト + 退避リトライ）
 async function fetchWithRetry(
@@ -63,9 +61,29 @@ export async function callFlow(input: unknown): Promise<WhyWhyResponse> {
     60000 // 最大 60 秒
   );
 
+  const text = await res.text();
   if (!res.ok) {
-    const text = await res.text();
     throw new Error(`Flow error ${res.status}: ${text}`);
   }
-  return (await res.json()) as WhyWhyResponse;
+
+  if (!text) {
+    return { ok: false, judgement: "", issues: "", proposal: "", raw: "" };
+  }
+
+  try {
+    const parsed = JSON.parse(text) as any;
+    const body = parsed?.inputs?.body ?? parsed?.body ?? parsed;
+    const base = (body?.raw && typeof body.raw === "string") ? JSON.parse(body.raw) : body;
+    const normalizedIssues =
+      typeof base?.issues === "string" ? (JSON.parse(base.issues) as string[]) : base?.issues;
+    return {
+      ok: Boolean(base?.ok ?? base?.judgement),
+      judgement: base?.judgement ?? "",
+      issues: normalizedIssues ?? "",
+      proposal: base?.proposal ?? "",
+      raw: text,
+    };
+  } catch {
+    return { ok: false, judgement: "", issues: "", proposal: "", raw: text };
+  }
 }

@@ -52,20 +52,23 @@
     <label>現象</label>
     <textarea id="phenomenon" rows="4"></textarea>
 
+    <label>原因</label>
+    <textarea id="cause" rows="2"></textarea>
+
+    <label>対処</label>
+    <textarea id="actionImmediate" rows="2"></textarea>
+
+    <label>対策</label>
+    <textarea id="countermeasure" rows="3"></textarea>
+
     <label>問題</label>
     <textarea id="problem" rows="2"></textarea>
 
     <label>なぜ①</label>
     <textarea id="why1" rows="2"></textarea>
 
-    <label>原因</label>
-    <textarea id="cause" rows="2"></textarea>
-
     <label>なぜ②</label>
     <textarea id="why2" rows="2"></textarea>
-
-    <label>対処</label>
-    <textarea id="actionImmediate" rows="2"></textarea>
 
     <label>なぜ③</label>
     <textarea id="why3" rows="2"></textarea>
@@ -73,19 +76,25 @@
     <label>なぜ④</label>
     <textarea id="why4" rows="2"></textarea>
 
-    <label>対策</label>
-    <textarea id="countermeasure" rows="3"></textarea>
-
     <label>なぜ⑤</label>
     <textarea id="why5" rows="2"></textarea>
 
-    <h2>指摘</h2>
-    <div id="issues" class="issues"></div>
+    <div id="issuesSection" class="section hidden">
+      <h2>指摘</h2>
+      <div id="issues" class="issues"></div>
+    </div>
 
-    <h2>ログ</h2>
-    <pre id="log" class="log"></pre>
+    <div id="proposalSection" class="section hidden">
+      <h2>提案</h2>
+      <div id="proposal" class="proposal"></div>
+    </div>
+
+    <div class="log-head">
+      <h2>ログ</h2>
+      <button id="btnToggleLog" type="button">表示</button>
+    </div>
+    <pre id="log" class="log hidden"></pre>
   </div>
 
-  <script type="module" src="./taskpane.ts"></script>
 </body>
 </html>
