@@ -145,7 +145,7 @@ button:focus{
    3) 入力欄の共通見た目
 ========= */
 
-/* 入力欄（checkbox / radio / range / button 系は除外） */
+
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]),
 textarea,
 select {
@@ -158,17 +158,13 @@ select {
   color: var(--ctrl-fg);
 }
 
-/* focusも同様に */
 input:not([type="checkbox"]):not([type="radio"]):not([type="range"]):not([type="button"]):not([type="submit"]):not([type="reset"]):focus,
-
-
-input[type="text"]:focus,
-input[type="date"]:focus,
 textarea:focus,
 select:focus{
   outline: 2px solid var(--focus);
   outline-offset: 1px;
 }
+
 
 textarea {
   min-height: 72px;
