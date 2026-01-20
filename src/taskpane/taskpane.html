@@ -6,7 +6,7 @@
   <meta charset="utf-8" />
   <meta http-equiv="X-UA-Compatible" content="IE=Edge" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WhyWhy Input Supporter</title>
+  <title>なぜなぜ入力支援</title>
 
   <link rel="stylesheet" href="./taskpane.css" />
   <script src="https://appsforoffice.microsoft.com/lib/1/hosted/office.js"></script>
@@ -76,36 +76,46 @@
 
           <label for="phenomenon">現象</label>
           <textarea id="phenomenon" rows="4"></textarea>
+          <div class="hint">工程 / 対象 / 逸脱 / 結果が入るように記述</div>
 
           <label for="cause">原因</label>
           <textarea id="cause" rows="2"></textarea>
+          <div class="hint">現象と直接つながる物理・電気的メカニズムを明記</div>
 
           <label for="actionImmediate">対処</label>
           <textarea id="actionImmediate" rows="2"></textarea>
+          <div class="hint">止血対応。いつ/誰が/どうするかを具体化</div>
 
           <label for="countermeasure">対策</label>
           <textarea id="countermeasure" rows="3"></textarea>
+          <div class="hint">再発防止。仕組み化（治具/手順/ルール）まで落とし込み</div>
 
           <label for="problem">問題</label>
           <textarea id="problem" rows="2"></textarea>
+          <div class="hint">影響（品質/納期/安全/コスト）で1行定義</div>
         </div>
 
         <div class="card">
           <h2>なぜの掘り下げ</h2>
           <label for="why1">なぜ①</label>
           <textarea id="why1" rows="2"></textarea>
+          <div class="hint">1つ上の段を直接説明する因果か確認</div>
 
           <label for="why2">なぜ②</label>
           <textarea id="why2" rows="2"></textarea>
+          <div class="hint">条件依存（温度/負荷/時間/ロット）を明示</div>
 
           <label for="why3">なぜ③</label>
           <textarea id="why3" rows="2"></textarea>
+          <div class="hint">プロセス要因へ逃げず、技術因果の継続を意識</div>
 
           <label for="why4">なぜ④</label>
           <textarea id="why4" rows="2"></textarea>
+          <div class="hint">検証に必要なデータ/測定点を追記</div>
 
           <label for="why5">なぜ⑤</label>
           <textarea id="why5" rows="2"></textarea>
+          <div class="hint">最深部の真因。再発防止と1対1で対応</div>
         </div>
 
         <div id="issuesSection" class="card section hidden">

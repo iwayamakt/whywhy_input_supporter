@@ -4,8 +4,8 @@
   <Version>1.0.0.0</Version>
   <ProviderName>Contoso</ProviderName>
   <DefaultLocale>en-US</DefaultLocale>
-  <DisplayName DefaultValue="whywhy_input_supporter"/>
-  <Description DefaultValue="A template to get started."/>
+  <DisplayName DefaultValue="なぜなぜ入力支援"/>
+  <Description DefaultValue="なぜなぜ分析の入力とレビューを支援します。"/>
   <IconUrl DefaultValue="https://localhost:3000/assets/icon-32.png"/>
   <HighResolutionIconUrl DefaultValue="https://localhost:3000/assets/icon-64.png"/>
   <SupportUrl DefaultValue="https://www.contoso.com/help"/>
@@ -72,13 +72,13 @@
         <bt:Url id="Taskpane.Url" DefaultValue="https://localhost:3000/taskpane.html"/>
       </bt:Urls>
       <bt:ShortStrings>
-        <bt:String id="GetStarted.Title" DefaultValue="Get started with your sample add-in!"/>
-        <bt:String id="CommandsGroup.Label" DefaultValue="Commands Group"/>
-        <bt:String id="TaskpaneButton.Label" DefaultValue="Show Task Pane"/>
+        <bt:String id="GetStarted.Title" DefaultValue="なぜなぜ入力支援の準備完了"/>
+        <bt:String id="CommandsGroup.Label" DefaultValue="なぜなぜ入力支援"/>
+        <bt:String id="TaskpaneButton.Label" DefaultValue="なぜなぜ入力支援を開く"/>
       </bt:ShortStrings>
       <bt:LongStrings>
-        <bt:String id="GetStarted.Description" DefaultValue="Your sample add-in loaded successfully. Go to the HOME tab and click the 'Show Task Pane' button to get started."/>
-        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="Click to Show a Taskpane"/>
+        <bt:String id="GetStarted.Description" DefaultValue="ホームタブのボタンから入力パネルを開いてください。"/>
+        <bt:String id="TaskpaneButton.Tooltip" DefaultValue="なぜなぜ入力支援パネルを開きます"/>
       </bt:LongStrings>
     </Resources>
   </VersionOverrides>

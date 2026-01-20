@@ -1,8 +1,7 @@
 
 // src/taskpane/taskpane.ts
 import { readTemplate, writeTemplate } from "../whywhy/excel";
-import { validateTemplate } from "../whywhy/validate";
-import type { WhyWhyData } from "../whywhy/types";
+import type { WhyWhyData, ValidationIssue } from "../whywhy/types";
 import { callFlow } from "../whywhy/api";
 
 const $ = (id: string) => document.getElementById(id) as HTMLElement;
@@ -49,7 +48,7 @@ const clearLog = () => {
   ( $("log") as HTMLPreElement ).textContent = "";
 };
 
-const setIssues = (issues: ReturnType<typeof validateTemplate>) => {
+const setIssues = (issues: ValidationIssue[]) => {
   const el = $("issues");
   el.innerHTML = "";
   if (!issues.length) {
@@ -128,7 +127,8 @@ const updateMissing = () => {
     return;
   }
   for (const item of missing) {
-    list.innerHTML += `<span class="chip">${item}</span>`;
+    const target = fields.find((f) => f.label === item)?.id ?? "";
+    list.innerHTML += `<button class="chip chip-btn" type="button" data-target="${target}">${item}</button>`;
   }
 };
 
@@ -268,9 +268,6 @@ async function onFlow() {
     question,
   };
 
-  log("送信ペイロード:");
-  log(JSON.stringify(payload, null, 2));
-
   try {
     const res = await callFlow(payload);
     setProgress("analyze");
@@ -319,6 +316,14 @@ Office.onReady(() => {
     $("log").classList.toggle("hidden", !logVisible);
     ($("btnToggleLog") as HTMLButtonElement).textContent = logVisible ? "非表示" : "表示";
   };
+  $("missingList").addEventListener("click", (e) => {
+    const target = (e.target as HTMLElement)?.closest<HTMLButtonElement>("button[data-target]");
+    if (!target) return;
+    const id = target.dataset.target;
+    if (!id) return;
+    document.getElementById(id)?.scrollIntoView({ behavior: "smooth", block: "center" });
+    (document.getElementById(id) as HTMLInputElement | HTMLTextAreaElement | null)?.focus();
+  });
   for (const f of fields) {
     const el = document.getElementById(f.id);
     el?.addEventListener("input", updateMissing);

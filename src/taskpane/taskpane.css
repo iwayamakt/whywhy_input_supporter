@@ -151,17 +151,6 @@ label {
   margin-bottom: 4px;
 }
 
-/* =========
-   2) ボタン列（読み取り/品質チェック/書き戻し）
-========= */
-.row {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
-  align-items: center;
-  margin-bottom: 6px;
-}
-
 button {
   padding: 8px 12px;
   border: 1px solid var(--btn-border);
@@ -214,15 +203,8 @@ textarea {
 }
 
 /* =========
-   4) 既存の .grid2 を「2列グリッド」として安定させる
+   4) メタの配置
 ========= */
-.grid2 {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 12px;
-  align-items: start;
-}
-
 .meta-grid{
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -234,13 +216,9 @@ textarea {
   grid-column: 1 / -1;
 }
 
-.span2{
-  grid-column: 1 / -1;
-}
-
 /* スマホ/狭いパネル時は1列へ */
 @media (max-width: 520px) {
-  .grid2 { grid-template-columns: 1fr; }
+  .meta-grid { grid-template-columns: 1fr; }
 }
 
 /* =========
@@ -512,10 +490,32 @@ textarea {
   border: 1px solid #ffd7b0;
 }
 
+.chip-btn{
+  border: none;
+  cursor: pointer;
+}
+
+.chip-btn:hover{
+  filter: brightness(0.98);
+}
+
 .chip.ok{
   background: #e9f7f7;
   color: #0b5e5f;
   border-color: #bde6e7;
+}
+
+.hint{
+  margin: 2px 0 12px;
+  font-size: 11px;
+  color: var(--muted);
+  padding-left: 8px;
+  border-left: 2px solid var(--surface-3);
+}
+
+.card label{
+  margin-top: 10px;
+  font-weight: 600;
 }
 
 /* =========
