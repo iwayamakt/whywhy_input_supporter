@@ -32,20 +32,37 @@
 
     <div class="layout">
       <section class="col main">
+        <div class="card status">
+          <div class="status-head">
+            <h2>入力チェック</h2>
+            <div id="progress" class="progress">
+              <span class="step" data-step="send">送信</span>
+              <span class="sep">→</span>
+              <span class="step" data-step="analyze">解析</span>
+              <span class="sep">→</span>
+              <span class="step" data-step="done">完了</span>
+            </div>
+          </div>
+          <div class="missing">
+            <div class="missing-title">不足項目</div>
+            <div id="missingList" class="missing-list"></div>
+          </div>
+        </div>
+
         <div class="card">
           <h2>メタ</h2>
-          <div class="grid2">
+          <div class="meta-grid">
             <div>
               <label for="metaProduct">製品名</label>
               <input id="metaProduct" type="text" />
             </div>
             <div>
-              <label for="metaDate">発表日</label>
-              <input id="metaDate" type="text" />
-            </div>
-            <div>
               <label for="metaPart">部品名</label>
               <input id="metaPart" type="text" />
+            </div>
+            <div>
+              <label for="metaDate">発表日</label>
+              <input id="metaDate" type="text" />
             </div>
             <div>
               <label for="metaOwner">担当者</label>
@@ -63,16 +80,11 @@
           <label for="cause">原因</label>
           <textarea id="cause" rows="2"></textarea>
 
-          <div class="grid2">
-            <div>
-              <label for="actionImmediate">対処</label>
-              <textarea id="actionImmediate" rows="2"></textarea>
-            </div>
-            <div>
-              <label for="countermeasure">対策</label>
-              <textarea id="countermeasure" rows="3"></textarea>
-            </div>
-          </div>
+          <label for="actionImmediate">対処</label>
+          <textarea id="actionImmediate" rows="2"></textarea>
+
+          <label for="countermeasure">対策</label>
+          <textarea id="countermeasure" rows="3"></textarea>
 
           <label for="problem">問題</label>
           <textarea id="problem" rows="2"></textarea>
@@ -80,32 +92,22 @@
 
         <div class="card">
           <h2>なぜの掘り下げ</h2>
-          <div class="grid2">
-            <div>
-              <label for="why1">なぜ①</label>
-              <textarea id="why1" rows="2"></textarea>
-            </div>
-            <div>
-              <label for="why2">なぜ②</label>
-              <textarea id="why2" rows="2"></textarea>
-            </div>
-            <div>
-              <label for="why3">なぜ③</label>
-              <textarea id="why3" rows="2"></textarea>
-            </div>
-            <div>
-              <label for="why4">なぜ④</label>
-              <textarea id="why4" rows="2"></textarea>
-            </div>
-            <div class="span2">
-              <label for="why5">なぜ⑤</label>
-              <textarea id="why5" rows="2"></textarea>
-            </div>
-          </div>
-        </div>
-      </section>
+          <label for="why1">なぜ①</label>
+          <textarea id="why1" rows="2"></textarea>
 
-      <aside class="col side">
+          <label for="why2">なぜ②</label>
+          <textarea id="why2" rows="2"></textarea>
+
+          <label for="why3">なぜ③</label>
+          <textarea id="why3" rows="2"></textarea>
+
+          <label for="why4">なぜ④</label>
+          <textarea id="why4" rows="2"></textarea>
+
+          <label for="why5">なぜ⑤</label>
+          <textarea id="why5" rows="2"></textarea>
+        </div>
+
         <div id="issuesSection" class="card section hidden">
           <h2>指摘</h2>
           <div id="issues" class="issues"></div>
@@ -123,7 +125,18 @@
           </div>
           <pre id="log" class="log hidden"></pre>
         </div>
-      </aside>
+      </section>
+    </div>
+    <div id="loading" class="loading hidden" aria-live="polite">
+      <div class="loading-card">
+        <div class="spinner"></div>
+        <div class="loading-text">AI確認を実行中…</div>
+        <div class="loading-steps">
+          <div class="lstep" data-step="send">送信</div>
+          <div class="lstep" data-step="analyze">解析</div>
+          <div class="lstep" data-step="done">完了</div>
+        </div>
+      </div>
     </div>
   </div>
 

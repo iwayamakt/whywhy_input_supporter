@@ -4,10 +4,21 @@ import type { WhyWhyData } from "./types";
 
 const sheetIndex = mapping.workbook.sheetIndex;
 
+const excelSerialToDateString = (n: number): string => {
+  const excelEpoch = Date.UTC(1899, 11, 30);
+  const ms = excelEpoch + n * 24 * 60 * 60 * 1000;
+  return new Date(ms).toLocaleDateString("ja-JP");
+};
+
 const toStr = (v: unknown): string => {
   if (v == null) return "";
   // Office.jsのvaluesは Date が来ることがある
   if (v instanceof Date) return v.toLocaleDateString("ja-JP");
+  if (typeof v === "number") return excelSerialToDateString(v);
+  if (typeof v === "string" && /^[0-9]+(\.[0-9]+)?$/.test(v)) {
+    const n = Number(v);
+    if (!Number.isNaN(n)) return excelSerialToDateString(n);
+  }
   return String(v);
 };
 

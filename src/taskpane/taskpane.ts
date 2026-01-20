@@ -12,6 +12,34 @@ const toggleSection = (id: string, show: boolean) => {
   el.classList.toggle("hidden", !show);
 };
 
+const setProgress = (step: "send" | "analyze" | "done" | "idle") => {
+  const steps = Array.from(document.querySelectorAll(".progress .step")) as HTMLElement[];
+  const order = ["send", "analyze", "done"];
+  steps.forEach((el) => {
+    const s = el.dataset.step ?? "";
+    el.classList.remove("active", "done");
+    if (step === "idle") return;
+    if (s === step) el.classList.add("active");
+    if (order.indexOf(s) !== -1 && order.indexOf(s) < order.indexOf(step)) {
+      el.classList.add("done");
+    }
+  });
+};
+
+const setLoading = (show: boolean, step: "send" | "analyze" | "done") => {
+  toggleSection("loading", show);
+  const steps = Array.from(document.querySelectorAll(".loading-steps .lstep")) as HTMLElement[];
+  const order = ["send", "analyze", "done"];
+  steps.forEach((el) => {
+    const s = el.dataset.step ?? "";
+    el.classList.remove("active", "done");
+    if (s === step) el.classList.add("active");
+    if (order.indexOf(s) !== -1 && order.indexOf(s) < order.indexOf(step)) {
+      el.classList.add("done");
+    }
+  });
+};
+
 const log = (msg: string) => {
   const el = $("log") as HTMLPreElement;
   el.textContent += msg + "\n";
@@ -71,6 +99,37 @@ const setProposal = (proposal?: string) => {
   const normalized = proposal.replace(/\\\\n/g, "\n").replace(/\\n/g, "\n");
   el.textContent = normalized;
   toggleSection("proposalSection", true);
+};
+
+const fields = [
+  { id: "phenomenon", label: "現象" },
+  { id: "cause", label: "原因" },
+  { id: "actionImmediate", label: "対処" },
+  { id: "countermeasure", label: "対策" },
+  { id: "problem", label: "問題" },
+  { id: "why1", label: "なぜ①" },
+  { id: "why2", label: "なぜ②" },
+  { id: "why3", label: "なぜ③" },
+  { id: "why4", label: "なぜ④" },
+  { id: "why5", label: "なぜ⑤" },
+];
+
+const updateMissing = () => {
+  const missing: string[] = [];
+  for (const f of fields) {
+    const el = document.getElementById(f.id) as HTMLInputElement | HTMLTextAreaElement | null;
+    const val = el?.value?.trim() ?? "";
+    if (val === "") missing.push(f.label);
+  }
+  const list = $("missingList");
+  list.innerHTML = "";
+  if (!missing.length) {
+    list.innerHTML = `<span class="chip ok">不足なし</span>`;
+    return;
+  }
+  for (const item of missing) {
+    list.innerHTML += `<span class="chip">${item}</span>`;
+  }
 };
 
 const clearProposalUI = () => {
@@ -177,6 +236,7 @@ async function onRead() {
   log("読み取り完了");
   clearIssuesUI();
   clearProposalUI();
+  updateMissing();
 }
 
 async function onValidate() {
@@ -197,6 +257,8 @@ async function onWrite() {
 async function onFlow() {
   clearLog();
   log("AI確認 送信中…");
+  setProgress("send");
+  setLoading(true, "send");
 
   const data = getFormData();
   const question = FIXED_QUESTION;
@@ -209,28 +271,42 @@ async function onFlow() {
   log("送信ペイロード:");
   log(JSON.stringify(payload, null, 2));
 
-  const res = await callFlow(payload);
-  log(`OK: ${res.ok}`);
-  log(`判定: ${res.judgement}`);
-  if (res.raw && (res.judgement == null || res.judgement === "")) {
-    log("RAW:");
-    log(res.raw);
-  }
-  if (res.issues) {
-    if (Array.isArray(res.issues)) {
-      log("指摘:");
-      for (const it of res.issues) log(`- ${it}`);
-    } else {
-      log(`指摘: ${res.issues}`);
+  try {
+    const res = await callFlow(payload);
+    setProgress("analyze");
+    setLoading(true, "analyze");
+
+    log(`OK: ${res.ok}`);
+    log(`判定: ${res.judgement}`);
+    if (res.raw && (res.judgement == null || res.judgement === "")) {
+      log("RAW:");
+      log(res.raw);
     }
+    if (res.issues) {
+      if (Array.isArray(res.issues)) {
+        log("指摘:");
+        for (const it of res.issues) log(`- ${it}`);
+      } else {
+        log(`指摘: ${res.issues}`);
+      }
+    }
+    if (res.proposal) log(`提案: ${res.proposal}`);
+    if (res.issues) {
+      setAiIssues(res.issues, res.judgement);
+    } else {
+      setAiIssues([], res.judgement);
+    }
+    setProposal(res.proposal);
+    updateMissing();
+    setProgress("done");
+    setLoading(true, "done");
+    setTimeout(() => setLoading(false, "done"), 600);
+    $("issuesSection").scrollIntoView({ behavior: "smooth", block: "start" });
+  } catch (e) {
+    setLoading(false, "send");
+    setProgress("idle");
+    throw e;
   }
-  if (res.proposal) log(`提案: ${res.proposal}`);
-  if (res.issues) {
-    setAiIssues(res.issues, res.judgement);
-  } else {
-    setAiIssues([], res.judgement);
-  }
-  setProposal(res.proposal);
 }
 
 Office.onReady(() => {
@@ -243,5 +319,11 @@ Office.onReady(() => {
     $("log").classList.toggle("hidden", !logVisible);
     ($("btnToggleLog") as HTMLButtonElement).textContent = logVisible ? "非表示" : "表示";
   };
+  for (const f of fields) {
+    const el = document.getElementById(f.id);
+    el?.addEventListener("input", updateMissing);
+  }
+  updateMissing();
+  setProgress("idle");
   log("準備完了");
 });
