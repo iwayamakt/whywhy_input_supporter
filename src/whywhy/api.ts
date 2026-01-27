@@ -3,15 +3,14 @@
 export type WhyWhyResponse = {
   ok: boolean;
   judgement: string;
-  issues: string[] | string;
+  issues: string[];          // できれば配列に統一
   proposal: string;
-  raw?: string;
+  raw?: string;             // ボットの生文字列(JSON文字列)
+  rawResponse?: string;     // フローの生レスポンス（デバッグ用）
 };
 
 const FLOW_ENDPOINT =
   "https://defaultd6eabf0ae5744f8bae6acbf6b315c6.f7.environment.api.powerplatform.com:443/powerautomate/automations/direct/workflows/f1705aeeac964e8993b348cfdca2939e/triggers/manual/paths/invoke?api-version=1&sp=%2Ftriggers%2Fmanual%2Frun&sv=1.0&sig=G7UI75jdDXRIIc97Jma3cEHxHBWUNLpSS8cmNSH-NAQ";
-
-const FLOW_AUTH_KEY = ""; // 使わなければ空
 
 // 共通：フェッチ（タイムアウト + 退避リトライ）
 async function fetchWithRetry(
@@ -29,7 +28,7 @@ async function fetchWithRetry(
       clearTimeout(id);
 
       // 429/5xx はリトライ
-      if ([429, 502, 503, 504].includes(res.status)) {
+      if ([429, 502, 503].includes(res.status)) {
         if (i === retry) return res;
         await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, i)));
         continue;
@@ -44,46 +43,61 @@ async function fetchWithRetry(
   throw new Error("unreachable");
 }
 
-export async function callFlow(input: unknown): Promise<WhyWhyResponse> {
-  const headers: Record<string, string> = {
-    "Content-Type": "application/json",
-  };
-  if (FLOW_AUTH_KEY) headers["x-functions-key"] = FLOW_AUTH_KEY; // 使う場合のみ
 
+export async function callFlow(input: unknown): Promise<WhyWhyResponse> {
   const res = await fetchWithRetry(
     FLOW_ENDPOINT,
     {
       method: "POST",
-      headers,
+      headers: { "Content-Type": "application/json", "Accept": "application/json" },
       body: JSON.stringify(input),
     },
     3,
-    60000 // 最大 60 秒
+    300000 // Reasoning想定なら伸ばす
   );
 
-  const text = await res.text();
-  if (!res.ok) {
-    throw new Error(`Flow error ${res.status}: ${text}`);
+  const rawText = await res.text();
+  if (!res.ok) throw new Error(`Flow error ${res.status}: ${rawText}`);
+
+  if (!rawText) {
+    return { ok: false, judgement: "", issues: [], proposal: "", raw: "", rawResponse: "" };
   }
 
-  if (!text) {
-    return { ok: false, judgement: "", issues: "", proposal: "", raw: "" };
-  }
-
+  let body: any;
   try {
-    const parsed = JSON.parse(text) as any;
-    const body = parsed?.inputs?.body ?? parsed?.body ?? parsed;
-    const base = (body?.raw && typeof body.raw === "string") ? JSON.parse(body.raw) : body;
-    const normalizedIssues =
-      typeof base?.issues === "string" ? (JSON.parse(base.issues) as string[]) : base?.issues;
-    return {
-      ok: Boolean(base?.ok ?? base?.judgement),
-      judgement: base?.judgement ?? "",
-      issues: normalizedIssues ?? "",
-      proposal: base?.proposal ?? "",
-      raw: text,
-    };
+    body = JSON.parse(rawText);
+    // Responseが入れ子で返る場合への保険
+    body = body?.body ?? body?.inputs?.body ?? body;
   } catch {
-    return { ok: false, judgement: "", issues: "", proposal: "", raw: text };
+    // JSONで返らないなら、そのまま返す
+    return { ok: false, judgement: "", issues: [], proposal: "", raw: "", rawResponse: rawText };
+  }
+
+  const judgement = String(body?.judgement ?? "");
+  const ok =
+    body?.ok === true ||
+    judgement.toUpperCase() === "OK";
+
+  const issues =
+    Array.isArray(body?.issues) ? body.issues.map(String)
+      : (typeof body?.issues === "string" ? safeJsonArray(body.issues) : []);
+
+  return {
+    ok,
+    judgement,
+    issues,
+    proposal: String(body?.proposal ?? ""),
+    raw: typeof body?.raw === "string" ? body.raw : "",
+    rawResponse: rawText,
+  };
+}
+
+function safeJsonArray(s: string): string[] {
+  try {
+    const v = JSON.parse(s);
+    return Array.isArray(v) ? v.map(String) : [];
+  } catch {
+    return [];
   }
 }
+
