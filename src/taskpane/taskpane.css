@@ -301,13 +301,46 @@ textarea {
 }
 
 .proposal{
+  color: var(--fg);
+  white-space: pre-wrap;
+  margin: 8px 0 12px;
+}
+
+.proposal-item{
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: 10px;
   padding: 10px 12px;
   border: 1px solid var(--border);
   border-radius: 12px;
   background: var(--surface-2);
+}
+
+.proposal-item + .proposal-item{
+  margin-top: 8px;
+}
+
+.proposal-item-plain{
+  display: block;
+}
+
+.proposal-priority{
+  min-width: 34px;
+  height: 24px;
+  padding: 0 8px;
+  border: 1px solid var(--btn-border);
+  border-radius: 999px;
+  background: var(--btn-bg);
+  color: var(--btn-fg);
+  font-size: 12px;
+  font-weight: 700;
+  line-height: 22px;
+  text-align: center;
+}
+
+.proposal-body{
+  min-width: 0;
   color: var(--fg);
-  white-space: pre-wrap;
-  margin: 8px 0 12px;
 }
 
 .hidden{

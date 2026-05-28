@@ -88,15 +88,79 @@ const setAiIssues = (issues: string[] | string, judgement?: string) => {
   setIssues(list.map((message) => ({ field: "", severity: sev, message })));
 };
 
+type ProposalItem = {
+  priority: string;
+  body: string;
+};
+
+const splitProposalByPriority = (proposal: string): ProposalItem[] => {
+  const normalized = proposal.replace(/\\\\n/g, "\n").replace(/\\n/g, "\n").trim();
+  const headingPattern = /(^|\n)\s*(?:#{1,6}\s*)?(?:[-*]\s*)?(P[1-3])(?:\s*[（(][^）)\n]{1,20}[）)])?(?:\s*[：:.)）、-]|\s+)/g;
+  const matches: { index: number; contentStart: number; priority: string }[] = [];
+  var match: RegExpExecArray | null;
+
+  while ((match = headingPattern.exec(normalized)) !== null) {
+    matches.push({
+      index: match.index + match[1].length,
+      contentStart: headingPattern.lastIndex,
+      priority: match[2],
+    });
+  }
+
+  if (matches.length < 2) {
+    return [];
+  }
+
+  return matches
+    .map((current, i) => {
+      const next = matches[i + 1];
+      return {
+        priority: current.priority,
+        body: normalized.slice(current.contentStart, next ? next.index : normalized.length).trim(),
+      };
+    })
+    .filter((item) => item.body);
+};
+
+const appendProposalCard = (container: HTMLElement, bodyText: string, priority?: string) => {
+  const card = document.createElement("div");
+  card.className = priority ? "proposal-item" : "proposal-item proposal-item-plain";
+
+  if (priority) {
+    const badge = document.createElement("div");
+    badge.className = "proposal-priority";
+    badge.textContent = priority;
+    card.appendChild(badge);
+  }
+
+  const body = document.createElement("div");
+  body.className = "proposal-body";
+  body.textContent = bodyText;
+
+  card.appendChild(body);
+  container.appendChild(card);
+};
+
 const setProposal = (proposal?: string) => {
   const el = $("proposal");
+  el.innerHTML = "";
   if (!proposal?.trim()) {
-    el.textContent = "（提案なし）";
+    appendProposalCard(el, "（提案なし）");
     toggleSection("proposalSection", true);
     return;
   }
   const normalized = proposal.replace(/\\\\n/g, "\n").replace(/\\n/g, "\n");
-  el.textContent = normalized;
+  const items = splitProposalByPriority(normalized);
+
+  if (!items.length) {
+    appendProposalCard(el, normalized);
+    toggleSection("proposalSection", true);
+    return;
+  }
+
+  items.forEach((item) => {
+    appendProposalCard(el, item.body, item.priority);
+  });
   toggleSection("proposalSection", true);
 };
 
