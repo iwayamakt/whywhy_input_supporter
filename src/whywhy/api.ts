@@ -28,7 +28,7 @@ async function fetchWithRetry(
       clearTimeout(id);
 
       // 429/5xx はリトライ
-      if ([429, 502, 503].includes(res.status)) {
+      if ([429, 502, 503, 504].includes(res.status)) {
         if (i === retry) return res;
         await new Promise((r) => setTimeout(r, 1000 * Math.pow(2, i)));
         continue;
@@ -100,4 +100,3 @@ function safeJsonArray(s: string): string[] {
     return [];
   }
 }
-
