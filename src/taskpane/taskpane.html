@@ -19,13 +19,40 @@
         <h1>なぜなぜ分析 入力支援</h1>
         <p class="subtitle">現場情報を素早く整理して、AIレビューへつなげます。</p>
       </div>
-      <div class="actions">
-        <button id="btnRead">読み取り</button>
-        <button id="btnValidate">品質チェック</button>
-        <button id="btnWrite" class="primary">書き戻し</button>
-        <label class="chk">
+      <div class="actions" aria-label="Excel連携とAI内容チェック">
+        <button
+          id="btnRead"
+          class="action-btn"
+          type="button"
+          title="Excelシートの内容をこの画面へ取り込みます"
+          aria-label="Excelから取り込む。シートの内容をこの画面へ取り込みます"
+        >
+          <span class="action-label">Excelから取り込む</span>
+          <span class="action-note">シート → この画面</span>
+        </button>
+        <button
+          id="btnValidate"
+          class="action-btn"
+          type="button"
+          title="入力内容の不足や矛盾をAIで確認します"
+          aria-label="AIで内容チェック。入力内容の不足や矛盾をAIで確認します"
+        >
+          <span class="action-label">AIで内容チェック</span>
+          <span class="action-note">不足・矛盾を確認</span>
+        </button>
+        <button
+          id="btnWrite"
+          class="primary action-btn"
+          type="button"
+          title="この画面の入力内容をExcelシートへ反映します"
+          aria-label="Excelへ反映。この画面の入力内容をExcelシートへ反映します"
+        >
+          <span class="action-label">Excelへ反映</span>
+          <span class="action-note">この画面 → シート</span>
+        </button>
+        <label class="chk" title="チェックすると、値が入っているExcelセルは変更しません">
           <input type="checkbox" id="onlyIfEmpty" checked />
-          空欄のみ上書き（安全）
+          Excelの空欄だけ更新
         </label>
       </div>
     </header>
@@ -36,11 +63,11 @@
           <div class="status-head">
             <h2>入力チェック</h2>
             <div id="progress" class="progress">
-              <span class="step" data-step="send">送信</span>
+              <span class="step" data-step="send">AIへ送信</span>
               <span class="sep">→</span>
-              <span class="step" data-step="analyze">解析</span>
+              <span class="step" data-step="analyze">確認中</span>
               <span class="sep">→</span>
-              <span class="step" data-step="done">完了</span>
+              <span class="step" data-step="done">結果表示</span>
             </div>
           </div>
           <div class="missing">
@@ -140,11 +167,11 @@
     <div id="loading" class="loading hidden" aria-live="polite">
       <div class="loading-card">
         <div class="spinner"></div>
-        <div class="loading-text">AI確認を実行中…</div>
+        <div class="loading-text">AIで内容チェック中…</div>
         <div class="loading-steps">
-          <div class="lstep" data-step="send">送信</div>
-          <div class="lstep" data-step="analyze">解析</div>
-          <div class="lstep" data-step="done">完了</div>
+          <div class="lstep" data-step="send">AIへ送信</div>
+          <div class="lstep" data-step="analyze">確認中</div>
+          <div class="lstep" data-step="done">結果表示</div>
         </div>
       </div>
     </div>

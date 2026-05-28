@@ -222,7 +222,7 @@ textarea {
 }
 
 /* =========
-   5) チェックボックス行（空欄のみ上書き）
+   5) チェックボックス行（Excelの空欄だけ更新）
 ========= */
 .chk{
   display: inline-flex;
@@ -408,8 +408,36 @@ textarea {
   display: flex;
   gap: 8px;
   flex-wrap: wrap;
-  align-items: center;
+  align-items: stretch;
   justify-content: flex-end;
+}
+
+.action-btn{
+  min-width: 132px;
+  min-height: 52px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+  gap: 2px;
+  text-align: left;
+  line-height: 1.2;
+}
+
+.action-label{
+  font-size: 13px;
+  white-space: nowrap;
+}
+
+.action-note{
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--muted);
+  white-space: nowrap;
+}
+
+.primary .action-note{
+  color: rgba(255,255,255,0.86);
 }
 
 .layout{
@@ -453,6 +481,27 @@ textarea {
 @media (max-width: 900px) {
   .hero{
     flex-direction: column;
+  }
+}
+
+@media (max-width: 520px) {
+  .actions{
+    width: 100%;
+    justify-content: stretch;
+  }
+
+  .action-btn{
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+  }
+
+  .action-label,
+  .action-note{
+    white-space: normal;
+  }
+
+  .chk{
+    width: 100%;
   }
 }
 

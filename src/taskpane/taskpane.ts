@@ -292,10 +292,10 @@ const setFormData = (d: WhyWhyData) => {
 
 async function onRead() {
   clearLog();
-  log("読み取り開始…");
+  log("Excelから取り込み開始…");
   const data = await readTemplate();
   setFormData(data);
-  log("読み取り完了");
+  log("Excelから取り込み完了");
   clearIssuesUI();
   clearProposalUI();
   updateMissing();
@@ -308,17 +308,18 @@ async function onValidate() {
 async function onWrite() {
   clearLog();
   const onlyIfEmpty = (document.getElementById("onlyIfEmpty") as HTMLInputElement).checked;
-  log(`書き戻し開始…（空欄のみ上書き=${onlyIfEmpty}）`);
+  const writeMode = onlyIfEmpty ? "Excelの空欄だけ更新" : "Excelの対象セルを更新";
+  log(`Excelへ反映開始…（${writeMode}）`);
 
   const data = getFormData();
   await writeTemplate(data, { onlyIfEmpty });
 
-  log("書き戻し完了");
+  log("Excelへ反映完了");
 }
 
 async function onFlow() {
   clearLog();
-  log("AI確認 送信中…");
+  log("AIで内容チェックを送信中…");
   setProgress("send");
   setLoading(true, "send");
 
